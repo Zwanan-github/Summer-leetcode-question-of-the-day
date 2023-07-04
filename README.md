@@ -253,6 +253,32 @@ public:
 };
 ```
 
+### [ 矩阵中的和 - 2023/7/4](https://leetcode.cn/problems/sum-in-a-matrix/submissions/)
+
+```c++
+class Solution {
+public:
+    int matrixSum(vector<vector<int>>& nums) {
+        int res = 0;
+        // 对每行sort(), O(n*mlogm)
+        for (int i = 0; i < nums.size(); ++ i) {
+            sort(nums[i].begin(), nums[i].end());
+        }
+        // multiset的操作都是logn
+        multiset<int> set;
+        // n * m * logn
+        for (int i = 0; i < nums[0].size(); ++ i) {
+            set.clear();
+            for (int j = 0; j < nums.size(); ++ j) {
+                set.insert(nums[j][i]);
+            }
+            res += *set.rbegin();
+        }
+        return res;
+    }
+};
+```
+
 
 
 # 周赛
