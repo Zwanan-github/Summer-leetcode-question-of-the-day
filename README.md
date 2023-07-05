@@ -279,6 +279,17 @@ public:
 };
 ```
 
+### [K 件物品的最大和 - 2023/7/5](https://leetcode.cn/problems/k-items-with-the-maximum-sum/description/)
+
+```c++
+class Solution {
+public:
+    int kItemsWithMaximumSum(int numOnes, int numZeros, int numNegOnes, int k) {
+        return k >= numOnes ? numOnes + (k - numOnes >= numZeros ? -(k-numOnes-numZeros) : 0) : k;
+    }
+};
+```
+
 
 
 # 周赛
