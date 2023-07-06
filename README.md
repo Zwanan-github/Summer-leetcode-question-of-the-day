@@ -290,6 +290,32 @@ public:
 };
 ```
 
+### [拆分成最多数目的正偶数之和 - 2023/7/6](https://leetcode.cn/problems/maximum-split-of-positive-even-integers/)
+
+```c++
+class Solution {
+public:
+    vector<long long> maximumEvenSplit(long long finalSum) {
+        vector<long long> ans;
+        if (finalSum % 2 == 1) {
+            return ans;
+        }
+        long long bit = 2;
+        while (finalSum >= bit) {
+            finalSum -= bit;
+            ans.push_back(bit);
+            bit += 2;
+        }
+        if (finalSum) {
+            long long last = *ans.rbegin();
+            ans.pop_back();
+            ans.push_back(finalSum + last);
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
