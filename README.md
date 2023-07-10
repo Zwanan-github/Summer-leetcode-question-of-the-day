@@ -387,6 +387,123 @@ public:
 };
 ```
 
+### [两数之和 II - 输入有序数组 - 2023/7/8](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)
+
+```c++
+class Solution {
+public:
+    map<int,int> vis;
+    vector<int> twoSum(vector<int>& nums, int target) {
+        for (int i = 0; i < nums.size(); ++ i) {
+            if (vis.count(target - nums[i])) {
+                return {vis[target - nums[i]] + 1, i + 1};
+            } 
+            vis[nums[i]] = i;
+        }
+        return {};
+    }
+};
+```
+
+
+
+### [三数之和 - 2023/7/9](https://leetcode.cn/problems/3sum/)
+
+暴力法1
+
+```c++
+class Solution {
+public:
+    int search(vector<int>& nums, int l, int x) {
+        int r = nums.size();
+        while (l < r) {
+            int mid = (l + r) >> 1;
+            if (nums[mid] < x) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+        if (l >= nums.size() || nums[l] != x) return -1;
+        else return l;
+    }
+
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n; ++ i) {
+            if (i != 0 && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1; j < n; ++ j) {
+                if (j != i + 1 && nums[j] == nums[j - 1]) continue;
+                int idx = search(nums, j + 1, 0 - nums[i] - nums[j]);
+                if (idx != -1 && idx < nums.size()) {
+                    res.push_back({nums[i],nums[j],0 - nums[i] - nums[j]});
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+双指针法
+
+```c++
+class Solution {
+public:
+
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n; ++ i) {
+            if (i != 0 && nums[i] == nums[i - 1]) continue;
+            for (int j = i + 1, k = n - 1; j < n; ++ j) {
+                if (j != i + 1 && nums[j] == nums[j - 1]) continue;
+                while (j < k && nums[j] + nums[k] + nums[i] > 0) --k;
+                // 结束
+                if (j == k) break;
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+
+
+### [最接近的三数之和 - 2023/7/10](https://leetcode.cn/problems/3sum-closest/)
+
+```c++
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int res = 0x3f3f3f3f;
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        for (int i = 0; i < n; ++ i) {
+            // 双指针二分
+            for (int j = i + 1, k = n - 1; j < k;) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (abs(target - sum) < abs(target - res)) {
+                    res = sum;
+                } 
+                if (sum > target) {
+                    -- k;
+                } else if (sum < target) {
+                    ++ j;
+                } else return res;
+            }
+        }
+        return res;
+    }
+};
+```
+
 
 
 # 周赛
