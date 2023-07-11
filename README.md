@@ -749,3 +749,201 @@ public:
 };
 ```
 
+## 第 108 场双周-2023/7/8
+
+### [灵神的题解](https://www.bilibili.com/video/BV1Nh4y1E7cP)
+
+### [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/)
+
+```c++
+class Solution {
+public:
+    int alternatingSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int flag = 1, res = 0, cnt = 0;
+        // 预处理差
+        for (int i = n - 1; i >= 1; -- i) {
+            nums[i] -= nums[i - 1];
+        }
+        for (int i = 1; i < n; ++ i) {
+            if (nums[i] == flag) {
+                ++cnt;
+                flag = -flag;
+            } else {
+                res = max(res, cnt);
+                flag = 1;
+                cnt = 0;
+                if (nums[i] == 1) --i;
+            }
+        }
+        res = max(res, cnt);
+        return res == 0 ? -1 : res + 1;
+    }
+};
+```
+
+### [2766. 重新放置石块](https://leetcode.cn/problems/relocate-marbles/)
+
+```c++
+class Solution {
+public:
+    vector<int> relocateMarbles(vector<int>& nums, vector<int>& moveFrom, vector<int>& moveTo) {
+        vector<int> res;
+        map<int,int> cnt;
+        int n = moveFrom.size();
+        for (auto& x : nums) {
+            cnt[x]++;
+        }
+        for (int i = 0; i < n; ++ i) {
+            int from = moveFrom[i], to = moveTo[i];
+            if (cnt[from]) {
+                cnt[from] = 0;
+            }
+            cnt[to] = 1;
+        }
+        for (auto it : cnt) {
+            if (it.second > 0) {
+                res.push_back(it.first);
+            }
+        }
+        return res;
+    }
+};
+```
+
+### [2767. 将字符串分割为最少的美丽子字符串](https://leetcode.cn/problems/partition-string-into-minimum-beautiful-substrings/)
+
+#### dfs回溯
+
+```c++
+class Solution {
+public:
+    int INF = 0x3f3f3f3f;
+    string tenTobit(int n) {
+        string res = "";
+        while (n > 0) {
+            if (n % 2 == 1) res += "1";
+            else res += "0";
+            n /= 2;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    int minimumBeautifulSubstrings(string s) {
+        vector<string> str5;
+        int len = s.size();
+        int num = 1;
+        // 先预处理得到长度为len及一下的5的幂次的二进制
+        while (num < (1 << len + 1)) {
+            // 化成二进制
+            str5.push_back(tenTobit(num));
+            num *= 5;
+        }
+        // 深搜
+        function<int(int)> dfs = [&](int i){
+            if (i == len) return 0;
+            // 美丽串不能前导零
+            if (s[i] == '0') {
+                return INF;
+            } 
+            int res = INF;
+            for (string str : str5) {
+                if (i + str.size() > len) break;
+                // bug: substr(begin, size());
+                string x = s.substr(i, str.size());
+                if (x.compare(str) == 0) {
+                    // 利用回溯来计算
+                    res = min(res, dfs(i + str.size()) + 1);
+                }
+            }
+            return res;
+        };
+        auto ans = dfs(0);
+        return ans == INF ? -1 : ans;
+    }
+};
+```
+
+#### 把dfs递推成dp
+
+```c++
+class Solution {
+public:
+    int INF = 0x3f3f3f3f;
+    string tenTobit(int n) {
+        string res = "";
+        while (n > 0) {
+            if (n % 2 == 1) res += "1";
+            else res += "0";
+            n /= 2;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    int minimumBeautifulSubstrings(string s) {
+        vector<string> str5;
+        int len = s.size();
+        int num = 1;
+        int f[len + 1];
+        while (num < (1 << len + 1)) {
+            // 化成二进制
+            str5.push_back(tenTobit(num));
+            num *= 5;
+        }
+        memset(f, INF, sizeof f);
+        f[len] = 0;
+        for (int i = len - 1; i >= 0; -- i) {
+            // 有前导零就会直接continue过去，直接会INF
+            if (s[i] == '0') continue;
+            for (string str : str5) {
+                if (i + str.size() > len) break;
+                if (str.compare(s.substr(i, str.size())) == 0) {
+                    f[i] = min(f[i], f[i + str.size()] + 1);
+                }
+            }
+        }
+        
+        return f[0] == INF ? -1 : f[0];
+    }
+};
+```
+
+
+
+### [2768. 黑格子的数目](https://leetcode.cn/problems/number-of-black-blocks/)
+
+```c++
+class Solution {
+public:
+    vector<long long> countBlackBlocks(int m, int n, vector<vector<int>>& coordinates) {
+        vector<long long> cnt(5, 0);
+        set<pair<int,int>> s;
+        set<pair<int,int>> vis;
+        // 加入
+        for (vector<int> p : coordinates) {
+            s.insert({p[0], p[1]});
+        }
+        for (auto [x, y] : s) {
+            // 枚举右上角
+            for (int i = max(1, x); i < min(m, x + 2); ++ i) {
+                for (int j = max(1, y); j < min(n, y + 2); ++ j) {
+                    if (!vis.count({i, j})) {
+                        vis.insert({i, j});
+                        // 计算以该点为左上角的块的黑点数量
+                        int sum = (s.count({i,j}) != 0) + (s.count({i - 1, j}) != 0) + (s.count({i,j - 1}) != 0) + (s.count({i - 1, j - 1}) != 0);
+                        cnt[sum]++;
+                    }
+                }
+            }
+        }
+        // for (int i = 0; i < 5; ++ i) cout << cnt[i] << " ";
+
+        // cout << vis.size() << "\n";
+        cnt[0] = (long long)(m - 1) * (n - 1) - vis.size();
+        return cnt;
+    }
+};
+```
+
+
+
