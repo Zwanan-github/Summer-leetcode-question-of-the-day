@@ -508,7 +508,7 @@ public:
 
 ### [最大子序列交替和 - 2023/7/11](https://leetcode.cn/problems/maximum-alternating-subsequence-sum/)
 
-- 朴素动态规划
+#### 朴素动态规划
 
 ```c++
  const int N = 100010;
@@ -529,7 +529,7 @@ public:
  };
 ```
 
-- 滑动数组，压缩内存
+#### 滑动数组，压缩内存
 
 ```c++
  class Solution {
