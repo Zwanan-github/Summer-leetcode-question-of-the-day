@@ -504,6 +504,51 @@ public:
 };
 ```
 
+### [最大子序列交替和 - 2023/7/11](https://leetcode.cn/problems/maximum-alternating-subsequence-sum/)
+
+* 朴素动态规划
+
+```c++
+const int N = 100010;
+class Solution {
+public:
+    long long g[N], f[N];
+    long long maxAlternatingSum(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 1; i <= n; ++ i) {
+            int& x = nums[i - 1];
+            // 当前在 i 个中挑选奇数个 => 在 i - 1 个中挑选偶数的最大 - 当前数字
+            f[i] = max(g[i - 1] - x, f[i - 1]);
+            // 当前在 i 个中挑选偶数个 => 在 i - 1 个中挑选奇数的最大 + 当前数字
+            g[i] = max(f[i - 1] + x, g[i - 1]);
+        }
+        return max(f[n], g[n]);
+    }
+};
+```
+
+* 滑动数组，压缩内存
+
+```c++
+class Solution {
+public:
+    long long maxAlternatingSum(vector<int>& nums) {
+        int n = nums.size();
+        long long even = 0, odd = 0; 
+        long long _even = even, _odd = odd;
+        for (int i = 1; i <= n; ++ i) {
+            _even = even, _odd = odd;
+            int& cur = nums[i - 1];
+            // 当前在 i 个中挑选奇数个 => 在 i - 1 个中挑选偶数的最大 - 当前数字
+            odd = max(_odd, _even - cur);
+            // 当前在 i 个中挑选偶数个 => 在 i - 1 个中挑选奇数的最大 + 当前数字
+            even = max(_even, _odd + cur);
+        }
+        return max(even, odd);
+    }
+};
+```
+
 
 
 # 周赛
