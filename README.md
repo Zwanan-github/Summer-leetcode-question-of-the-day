@@ -409,7 +409,7 @@ public:
 
 ### [三数之和 - 2023/7/9](https://leetcode.cn/problems/3sum/)
 
-暴力法1
+#### 暴力法
 
 ```c++
 class Solution {
@@ -447,7 +447,7 @@ public:
 };
 ```
 
-双指针法
+#### 双指针法
 
 ```c++
 class Solution {
