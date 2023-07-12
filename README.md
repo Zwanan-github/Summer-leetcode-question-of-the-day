@@ -551,6 +551,26 @@ public:
  };
 ```
 
+### [交替数字和 - 2023/7/12](https://leetcode.cn/problems/alternating-digit-sum/description/)
+
+```c++
+class Solution {
+public:
+    int alternateDigitSum(int n) {
+        int flag = 1, sum = 0, cnt = 0;
+        while (n != 0) {
+            sum += flag * (n % 10);
+            n /= 10;
+            flag = -flag;
+            ++ cnt;
+        }
+        return sum * (cnt % 2 == 0 ? -1 : 1) ;
+    }
+};
+```
+
+
+
 # 周赛
 
 ## 第352场周赛-2023/7/2
