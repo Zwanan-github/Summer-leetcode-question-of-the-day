@@ -945,5 +945,171 @@ public:
 };
 ```
 
+## 第 353 场周赛-2023/7/9
 
+### [灵神题解](https://www.bilibili.com/video/BV1XW4y1f7Wv/)
+
+### [2769. 找出最大的可达成数字](https://leetcode.cn/problems/find-the-maximum-achievable-number/)
+
+```c++
+class Solution {
+public:
+    int theMaximumAchievableX(int num, int t) {
+        return num + t * 2;
+    }
+};
+```
+
+### [2770. 达到末尾下标所需的最大跳跃次数](https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/description/)
+
+#### dfs + 记忆化做法
+
+```c++
+class Solution {
+public:
+    int maximumJumps(vector<int>& nums, int target) {
+        int n = nums.size();
+        int f[n];
+        for (int i = 0 ; i < n ;++ i) f[i] = INT_MIN;
+        f[n - 1] = 0;
+        function<int(int)> dfs = [&](int x){
+            // 用记忆化减少次数
+            if (f[x] != INT_MIN) return f[x];
+            int res = INT_MIN;
+            for (int i = x + 1; i < n; ++ i) {
+                if (abs(nums[i] - nums[x]) <= target) {
+                    res = max(res, dfs(i) + 1);
+                }
+            } 
+            f[x] = res;
+            return f[x];
+        };
+        int ans = dfs(0);
+        return ans < 0 ? -1 : ans;
+    }
+};
+```
+
+
+
+#### dp做法
+
+```c++
+class Solution {
+public:
+    int maximumJumps(vector<int>& nums, int target) {
+        int n = nums.size(), INF = -1;
+        int f[n + 1];
+        memset(f, INF, sizeof f);
+        f[0] = 0;
+        for (int i = 1; i < n; ++ i) {
+            for (int j = 0; j < i; ++ j) {
+                if (f[j] != -1 && abs(nums[i] - nums[j]) <= target) {
+                    f[i] = max(f[i], f[j] + 1);
+                }
+            }
+        }
+        return f[n - 1];
+    }
+};
+```
+
+### [2771. 构造最长非递减子数组](https://leetcode.cn/problems/longest-non-decreasing-subarray-from-two-arrays/description/)
+
+#### dfs + 记忆化做法
+
+```c++
+class Solution {
+public:
+    int maxNonDecreasingLength(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        int nums[n][2];
+        // 记忆化
+        int vis[n][2];
+        memset(vis, -1, sizeof vis);
+        for (int i = 0; i < n; ++ i) {
+            nums[i][0] = nums1[i];
+            nums[i][1] = nums2[i];
+        }
+        // dfs(i,j)是以结尾nums[i]结尾的，选第j个的情况
+        function<int(int,int)> dfs = [&](int i, int j)->int{
+            if (i == 0) return 1;
+            // 使用记忆化减少次数
+            if (vis[i][j] != -1) return vis[i][j];
+            int res = 1;
+            if (nums1[i - 1] <= nums[i][j]) 
+                res = dfs(i - 1, 0) + 1;
+            if (nums2[i - 1] <= nums[i][j]) 
+                res = max(res, dfs(i - 1, 1) + 1);
+            vis[i][j] = res;
+            return res;
+        };
+        int ans = 0;
+        for (int i = 0; i < n; ++ i) {
+            ans = max(ans, dfs(i, 0));
+            ans = max(ans, dfs(i, 1));
+        }
+        return ans;
+    }
+};
+```
+
+#### 化成dp递推
+
+```c++
+class Solution {
+public:
+    int maxNonDecreasingLength(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size(), res = 1;
+        int nums[n][2], f[n][2];
+        for (int i = 0; i < n; ++ i) {
+            nums[i][0] = nums1[i];
+            nums[i][1] = nums2[i];
+        }
+        for (int i = 0; i < n; ++ i) {
+            f[i][0] = f[i][1] = 1;
+        }
+        f[0][0] = f[0][1] = 1;
+        for (int i = 1; i < n; ++ i) {
+            for (int j = 0; j < 2; ++ j) {
+                if (nums1[i - 1] <= nums[i][j]) {
+                    f[i][j] = f[i - 1][0] + 1;
+                } 
+                if (nums2[i - 1] <= nums[i][j]) {
+                    f[i][j] = max(f[i][j], f[i - 1][1] + 1);
+                }
+                res = max(res, f[i][j]);
+            } 
+        }
+        return res;
+    }
+};
+```
+
+### [2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/description/)
+
+维护差分数组，求差分数组的合理性
+
+```c++
+class Solution {
+public:
+    bool checkArray(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> d(n + 1);
+        d[0] = nums[0];
+        d[n] = -nums[n - 1];
+        for (int i = n - 1; i >= 1; -- i) d[i] = nums[i] - nums[i - 1];
+        for (int i = 0; i + k <= n; ++ i) {
+            if (d[i] > 0) {
+                d[i + k] += d[i];
+                d[i] = 0;
+            } else if (d[i] < 0) return false;
+        }
+        for (int i = 0; i <= n; ++ i) {
+            if (d[i]) return false;
+        }
+        return true;
+    }
+};
+```
 
