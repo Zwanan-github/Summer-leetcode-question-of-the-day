@@ -569,6 +569,35 @@ public:
 };
 ```
 
+### [下降路径最小和 - 2023/7/13](https://leetcode.cn/problems/minimum-falling-path-sum/description/)
+
+```c++
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n = matrix.size(), res = INT_MAX;
+        int f[n][n];
+        for (int i = 0; i < n; ++ i) 
+            for (int j = 0; j < n; ++ j) 
+                f[i][j] = INT_MAX;
+        for (int i = 0; i < n; ++ i) {
+            f[0][i] = matrix[0][i];
+        }
+        for (int i = 1; i < n; ++ i) {
+            for (int j = 0; j < n; ++ j) {
+                if (j > 0) f[i][j] = min(f[i][j], f[i - 1][j - 1] + matrix[i][j]);               
+                if (j < n - 1) f[i][j] = min(f[i][j], f[i - 1][j + 1] + matrix[i][j]);
+                f[i][j] = min(f[i][j], f[i - 1][j] + matrix[i][j]);
+            }
+        }
+        for (int i = 0; i < n; ++ i) {
+            res = min(res, f[n - 1][i]);
+        } 
+        return res;
+    }
+};
+```
+
 
 
 # 周赛
