@@ -669,6 +669,50 @@ public:
 };
 ```
 
+### **[树中距离之和 - 2023/7/16](https://leetcode.cn/problems/sum-of-distances-in-tree/description/)
+
+树上dp
+
+题解：[834. 树中距离之和 - 力扣（Leetcode）](https://leetcode.cn/problems/sum-of-distances-in-tree/solutions/2345592/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)
+
+```c++
+class Solution {
+public:
+
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        // 无向图
+        vector<vector<int>> e(n);
+        vector<int> size(n, 1);
+        vector<int> ans(n);
+        for (auto& x : edges) {
+            e[x[0]].push_back(x[1]);
+            e[x[1]].push_back(x[0]);
+        }
+        // 预处理ans[0],和size
+        function<void(int,int,int)> dfs = [&](int u, int fa, int depth){
+            ans[0] += depth;
+            for (int& x : e[u]) {
+                if (x != fa) {
+                    dfs(x, u, depth + 1);
+                    size[u] += size[x];
+                }
+            }
+        };
+        dfs(0, -1, 0);
+        function<void(int,int)> dfs2 = [&](int u, int fa) {
+            for (int& x : e[u]) {
+                if (x != fa) {
+                    ans[x] = ans[u] + n - 2 * size[x]; 
+                    dfs2(x, u);
+                }
+            }
+        };
+        dfs2(0, -1);
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
