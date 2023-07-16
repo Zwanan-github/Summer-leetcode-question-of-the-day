@@ -1277,3 +1277,103 @@ public:
 };
 ```
 
+## [第 354 场周赛 - 2023/7/16](https://leetcode.cn/contest/weekly-contest-354/)
+
+### [6889. 特殊元素平方和](https://leetcode.cn/problems/sum-of-squares-of-special-elements/)
+
+```c++
+class Solution {
+public:
+    int sumOfSquares(vector<int>& nums) {
+        int n = nums.size();
+        int ans = 0;
+        for (int i = 0; i < n; ++ i) 
+            if (n % (i + 1) == 0) {
+                ans += nums[i] * nums[i];
+            }
+        return ans;
+    }
+};
+```
+
+### [6929. 数组的最大美丽值](https://leetcode.cn/problems/maximum-beauty-of-an-array-after-applying-operation/description/)
+
+```c++
+class Solution {
+public:
+    int maximumBeauty(vector<int>& nums, int k) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        // 1, 2, 4, 6
+        for (int i = 0; i < n; ++ i) {
+            int l = nums[i];
+            int r = nums[i] + 2 * k;
+            int lindex = lower_bound(nums.begin(), nums.end(), l) - nums.begin();
+            int rindex = upper_bound(nums.begin(), nums.end(), r) - nums.begin();
+            ans = max(ans, rindex - lindex);
+        }
+        return ans;
+    }
+};
+```
+
+### [6927. 合法分割的最小下标](https://leetcode.cn/problems/minimum-index-of-a-valid-split/)
+
+```c++
+class Solution {
+public:
+    int minimumIndex(vector<int>& nums) {
+        int n = nums.size();
+        int x = 0, freq = 0;
+        map<int,int> cnt;
+        // 求支配数
+        for (int i = 0; i < n; ++ i) {
+            cnt[nums[i]]++;
+            if (cnt[nums[i]] > freq) {
+                freq = cnt[nums[i]];
+                x = nums[i];
+            }
+        }
+        cout << x << '\n';
+        int freq_l = 0, freq_r = freq - freq_l;
+        for (int i = 0; i < n; ++ i) {
+            int len_l = i + 1, len_r = n - 1 - i;
+            if (nums[i] == x) {
+                freq_l++;
+                freq_r--;
+            }
+            cout << freq_l << " " << len_l << " " << freq_r << " " << len_r <<'\n';
+            if (freq_l > len_l / 2 && freq_r > len_r / 2) return i;
+        }
+        
+        return -1;
+    }
+};
+```
+
+### [6924. 最长合法子字符串的长度](https://leetcode.cn/problems/length-of-the-longest-valid-substring/description/)
+
+双指针
+
+```c++
+class Solution {
+public:
+    int longestValidSubstring(string word, vector<string>& forbidden) {
+        unordered_set<string> set{forbidden.begin(), forbidden.end()};
+        int ans = 0, left = 0, n = word.size();
+        for (int right = 0; right < n; ++ right) {
+            // 倒着找就是最长的
+            for (int i = right; i >= left && i > right - 10; -- i) {
+                if (set.count(word.substr(i, right - i + 1))) {
+                    left = i + 1;
+                    break;
+                }
+            }
+            ans = max(ans, right - left + 1);
+        }
+        return ans;
+    }
+};
+```
+
