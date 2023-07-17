@@ -713,6 +713,40 @@ public:
 };
 ```
 
+### [字符串相加 - 2023/7/17](https://leetcode.cn/problems/add-strings/description/)
+
+高精度加法
+
+```c++
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        if (num1.size() < num2.size()) return addStrings(num2, num1);
+        int acc = 0;
+        for (int i = num1.size() - 1, j = num2.size() - 1; i >= 0; -- i , --j) {
+            int n1 = num1[i] - '0';
+            if (acc) {
+                n1 += 1;
+                acc = 0;
+            }
+            if (j >= 0) {
+                int n2 = num2[j] - '0';
+                n1 += n2;
+            }
+            if (n1 >= 10) {
+                acc = 1;
+                n1 %= 10;
+            }
+            num1[i] = (n1 + '0');
+        }
+        if (acc) {
+            num1 = "1" + num1;
+        }
+        return num1;
+    }
+};
+```
+
 
 
 # 周赛
