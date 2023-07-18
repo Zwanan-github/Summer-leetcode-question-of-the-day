@@ -747,6 +747,34 @@ public:
 };
 ```
 
+### [包含每个查询的最小区间 - 2023/7/18](https://leetcode.cn/problems/minimum-interval-to-include-each-query/description/)
+
+```c++
+class Solution {
+public:
+    vector<int> minInterval(vector<vector<int>>& itv, vector<int>& queries) {
+        int n = queries.size();
+        // 最小堆
+        multimap<int, int> map;
+        for (int i = 0; i < n; ++ i) {
+            map.insert({queries[i], i});
+        }
+        vector<int> ans(n, -1);
+        // 按照区间长度走，满足条件的走完直接在multimap中删除
+        sort(itv.begin(), itv.end(), [](auto& a, auto& b) {
+            return a[1]- a[0] < b[1] - b[0]; 
+        });
+        for (auto& itvs : itv) {
+            int start = itvs[0], end = itvs[1];
+            for (auto it = map.lower_bound(start); it != map.end() && it->first <= end; it = map.erase(it)) {
+                ans[it->second] = end - start + 1;
+            }
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
