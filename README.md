@@ -775,6 +775,42 @@ public:
 };
 ```
 
+### [模拟行走机器人 - 2023/7/19](https://leetcode.cn/problems/walking-robot-simulation/)
+
+```c++
+class Solution {
+public:
+    
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        int dx[] = {0,1,0,-1}, dy[] = {1, 0, -1, 0};
+        int idx = 0, ans = 0;
+        pair<int, int> dis = {0, 0};
+        multiset<pair<int,int>> set;
+        for (auto&& obstacle : obstacles) {
+            set.insert({obstacle[0], obstacle[1]});
+        }
+        for (int& command : commands) {
+            if (command == -2) {
+                idx = (idx - 1) < 0 ? 3 : idx - 1;
+            } else if (command == -1) {
+                idx = (idx + 1) > 3 ? 0 : idx + 1;
+            } else if (command > 0) {
+                while (command-- && set.count({dis.first + dx[idx], dis.second + dy[idx]}) == 0) {
+                    dis.first += dx[idx];
+                    dis.second += dy[idx];
+                    ans = max(ans, dis.first * dis.first + dis.second * dis.second);
+                }
+                cout << dis.first << " " << dis.second << '\n';
+            }
+        }
+        
+        return ans;
+    }
+};
+```
+
+
+
 
 
 # 周赛
