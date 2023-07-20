@@ -809,7 +809,36 @@ public:
 };
 ```
 
+### **[918. 环形子数组的最大和 - 2023/7/20](https://leetcode.cn/problems/maximum-sum-circular-subarray/description/)
 
+```c++
+class Solution {
+public:
+    int maxSubarraySumCircular(vector<int>& nums) {
+        int n = nums.size();
+        int a[n * 2 + 1];
+        for (int i = 1; i <= n; ++ i) {
+            a[i] = a[i + n] = nums[i - 1];
+        }
+        int ans = -0x3f3f3f3f;
+        for (int i = 1; i <= n * 2; ++ i) {
+            a[i] += a[i - 1];
+        } 
+        int f[2 * n + 1], h = 0, t = 0;
+        // 先把前缀和头放入
+        f[0] = 0;
+        for (int i = 1; i <= n * 2; ++ i) {
+            while (h <= t && f[t] - f[h] + 1 > n) ++h;
+            // 求当前数结尾的单调队列的最大前缀和
+            ans = max(ans, a[i] - a[f[h]]);
+            // 把小的放进来，后面的权重就更大
+            while (h <= t && a[f[t]] >= a[i]) --t;
+            f[++t] = i;
+        }
+        return ans;
+    }
+};
+```
 
 
 
