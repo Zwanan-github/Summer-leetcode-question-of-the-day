@@ -840,6 +840,28 @@ public:
 };
 ```
 
+### [满足不等式的最大值 - 2023/7/21](https://leetcode.cn/problems/max-value-of-equation/description/)
+
+```c++
+class Solution {
+public:
+    int findMaxValueOfEquation(vector<vector<int>>& points, int k) {
+        int n = points.size();
+        int f[n + 1][2], h = 0, t = -1, ans = -0x3f3f3f3f;
+        for (int i = 0; i < n; ++ i) {
+            int x = points[i][0], y = points[i][1];
+            while (h <= t && x - f[h][0] > k) ++h;
+            // cout << x << " " << f[h][0] << '\n';
+            if (h <= t) ans = max(ans, x + y + f[h][1]);
+            // cout << ans << " " << x << " " << y - x << '\n';
+            while (h <= t && y - x >= f[t][1]) --t;
+            f[++t][0] = x, f[t][1] = y - x;
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
