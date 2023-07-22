@@ -862,6 +862,40 @@ public:
 };
 ```
 
+### [柠檬水找零 - 2023/7/22](https://leetcode.cn/problems/lemonade-change/description/)
+
+```c++
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int f[4];
+        memset(f, 0, sizeof f);
+        for (int bill : bills) {
+            int t = bill;
+            t -= 5;
+            for (int i = 3; i >= 0; -- i) {
+                if (t == 0) break;
+                // 跳过15的情况
+                if (i == 2) continue;
+                if (t >= (i + 1) * 5) {
+                    int cnt = t / ((i + 1) * 5);
+                    if (cnt <= f[i]) {
+                        f[i] -= cnt;
+                        t -= ((i + 1) * 5) * cnt;
+                    } else {
+                        f[i] = 0;
+                        t -= ((i + 1) * 5) * f[i];
+                    }
+                }
+            }
+            if (t != 0) return false;
+            f[(bill/5) - 1] ++; 
+        }
+        return true;
+    }
+};
+```
+
 
 
 # 周赛
