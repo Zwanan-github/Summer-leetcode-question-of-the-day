@@ -1255,8 +1255,6 @@ public:
 };
 ```
 
-
-
 ### [2768. 黑格子的数目](https://leetcode.cn/problems/number-of-black-blocks/)
 
 ```c++
@@ -1336,8 +1334,6 @@ public:
     }
 };
 ```
-
-
 
 #### dp做法
 
@@ -1556,6 +1552,123 @@ public:
             ans = max(ans, right - left + 1);
         }
         return ans;
+    }
+};
+```
+
+## [第 109 场双周赛 - 2023/7/22](https://leetcode.cn/contest/biweekly-contest-109)
+
+### [6930. 检查数组是否是好的](https://leetcode.cn/problems/check-if-array-is-good/)
+
+签到题
+
+```c++
+class Solution {
+public:
+    bool isGood(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        if (nums[n - 1] + 1 != n) return false;
+        for (int i = 0; i < n - 1; ++ i) {
+            if (nums[i] != i + 1) return false;
+        }
+        return true;
+    }
+};
+```
+
+### [6926. 将字符串中的元音字母排序](https://leetcode.cn/problems/sort-vowels-in-a-string/)
+
+签到题
+
+```c++
+class Solution {
+public:
+    string sortVowels(string s) {
+        vector<char> v;
+        for (int i = 0; i < s.size(); ++ i) {
+            if (s[i] == 'a' || s[i] == 'e' || 
+                s[i] == 'i' || s[i] == 'o' || 
+                s[i] == 'u' || s[i] == 'A' || 
+                s[i] == 'E' || s[i] == 'I' || 
+                s[i] == 'O' || s[i] == 'U') {
+                v.push_back(s[i] - 'A');
+            }
+        }
+        sort(v.begin(), v.end());
+        int t = 0;
+        for (int i = 0; i < s.size(); ++ i) {
+            if (s[i] == 'a' || s[i] == 'e' || 
+                s[i] == 'i' || s[i] == 'o' || 
+                s[i] == 'u' || s[i] == 'A' || 
+                s[i] == 'E' || s[i] == 'I' || 
+                s[i] == 'O' || s[i] == 'U') {
+                s[i] = v[t++] + 'A';
+            }
+        }
+        return s;
+    }
+};
+```
+
+### [6931. 访问数组中的位置使分数最大](https://leetcode.cn/problems/visit-array-positions-to-maximize-score/description/)
+
+动态规划
+
+状态方程：
+$$
+f[i,p] = max
+\begin{cases}
+f[i - 1,p] + nums[i],\\
+f[i - 1, 1 - p] + nums[i] - x,
+\end{cases}
+$$
+
+```c++
+class Solution {
+public:
+    long long maxScore(vector<int>& nums, int x) {
+        long long even = -1e18, odd = -1e18;
+        if (nums[0] % 2) odd = nums[0];
+        else even = nums[0];
+        long long ans = nums[0];
+        for (int i = 1; i < nums.size(); ++ i) {
+            long long tmp_even = nums[i] + even + (nums[i] % 2 == 0 ? 0 : -x);
+            long long tmp_odd = nums[i] + odd + (nums[i] % 2 == 0 ? -x : 0);
+            long long t = max(tmp_even, tmp_odd);
+            ans = max(ans, t);
+            if (nums[i] % 2 == 1) odd = max(odd, t);
+            else even = max(even, t);
+        }
+        return ans;
+    }
+};
+```
+
+### [6922. 将一个数字表示成幂的和的方案数](https://leetcode.cn/problems/ways-to-express-an-integer-as-sum-of-powers/)
+
+01背包，先处理每个数的幂次当成每个物品的容量，看能用多少种方式装满背包
+
+```c++
+class Solution {
+public:
+    int numberOfWays(int n, int x) {
+        long long p[n + 1];
+        for (int i = 1; i <= n; ++ i) {
+            p[i] = i;
+            for (int j = 2; j <= x; ++ j) p[i] *= i;
+        } 
+        int mod = 1e9 + 7;
+        int f[n + 1];
+        memset(f, 0, sizeof f);
+        f[0] = 1;
+        // n 件物品
+        for (int i = 1; i <= n; ++ i) {
+            for (int j = n; j >= p[i]; -- j) {
+                f[j] = (f[j] + f[j - p[i]]) % mod;
+            }
+        } 
+        return f[n];
     }
 };
 ```
