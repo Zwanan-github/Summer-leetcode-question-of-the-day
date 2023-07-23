@@ -896,6 +896,60 @@ public:
 };
 ```
 
+### [42. 接雨水 - 2023/7/23](https://leetcode.cn/problems/trapping-rain-water/description/)
+
+前后缀分解法
+
+```c++
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        vector<int> pre(n), suf(n);
+        pre[0] = height[0];suf[n - 1] = height[n - 1];
+        for (int i = 1; i < n; ++ i) {
+            pre[i] = max(height[i], pre[i - 1]);
+            suf[n - 1 - i] = max(height[n - 1 - i], suf[n - i]);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++ i) {
+            ans += min(pre[i], suf[i]) - height[i];
+        }
+        return ans;
+    }
+};
+```
+
+相向双指针
+
+```c++
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        int l = 0, r = n - 1;
+        // 优化掉内存
+        // 左边最小小于右边当前的最小，那当前前后缀最小值就是左边，不需要数组维护
+        int pre = height[l], suf = height[r];
+        int ans = 0;
+        while (l < r) {
+            if (pre <= suf) {
+                ans += pre - height[l];
+                ++l;
+            } else {
+                ans += suf - height[r];
+                --r;
+            }
+            pre = max(pre, height[l]);
+            suf = max(suf, height[r]);
+        }
+        return ans;
+    }
+};
+```
+
+
+
 
 
 # 周赛
@@ -1673,3 +1727,58 @@ public:
 };
 ```
 
+## [第 355 场周赛 - 2023/7/23](https://leetcode.cn/contest/weekly-contest-355/)
+
+### [6921. 按分隔符拆分字符串](https://leetcode.cn/problems/split-strings-by-separator/)
+
+```java
+class Solution {
+    public List<String> splitWordsBySeparator(List<String> words, char separator) {
+        List<String> ans = new ArrayList<String>();
+        String ss = "\\" + separator;
+        System.out.println(ss);
+        for (String s : words) {
+            String[] str = s.split(ss);
+            for (String st : str) {
+                System.out.println(st);
+                if (!"".equals(st))
+                    ans.add(st);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+### [6915. 合并后数组中的最大元素](https://leetcode.cn/problems/largest-element-in-an-array-after-merge-operations/description/)
+
+```c++
+class Solution {
+public:
+    long long maxArrayValue(vector<int>& nums) {
+        int n = nums.size();
+        long long ans = 0;
+        long long cnt = nums[n - 1];
+        for (int i = n - 1; i >= 1; i -= 1) {
+            if ( cnt >= nums[i - 1]) {
+                cnt += nums[i - 1]; 
+                cout << cnt << " 1" << '\n';
+            } else {
+                cnt = nums[i - 1];
+                cout << cnt << " 2" << '\n';
+            }
+            ans = max(ans, cnt);
+        }
+        ans = max(ans, cnt);
+        return ans;
+    }
+};
+```
+
+### [6955. 长度递增组的最大数目](https://leetcode.cn/problems/maximum-number-of-groups-with-increasing-length/)
+
+太困难学不了一点
+
+### [6942. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)
+
+太困难学不来一点
