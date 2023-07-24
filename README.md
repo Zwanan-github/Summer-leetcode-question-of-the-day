@@ -896,7 +896,7 @@ public:
 };
 ```
 
-### [42. 接雨水 - 2023/7/23](https://leetcode.cn/problems/trapping-rain-water/description/)
+### [接雨水 - 2023/7/23](https://leetcode.cn/problems/trapping-rain-water/description/)
 
 前后缀分解法
 
@@ -948,7 +948,24 @@ public:
 };
 ```
 
+### [宝石与石头 - 2023/7/24](https://leetcode.cn/problems/jewels-and-stones/description/)
 
+```c++
+class Solution {
+public:
+    int numJewelsInStones(string jewels, string stones) {
+        map<char, int> map;
+        int ans = 0;
+        for (int i = 0; i < stones.size(); ++ i) {
+            map[stones[i]]++;
+        }
+        for (int i = 0; i < jewels.size(); ++ i) {
+            ans += map[jewels[i]];
+        }
+        return ans;
+    }
+};
+```
 
 
 
