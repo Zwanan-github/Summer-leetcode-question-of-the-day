@@ -967,6 +967,32 @@ public:
 };
 ```
 
+### [将数组和减半的最少操作次数 - 2023/7/25](https://leetcode.cn/problems/minimum-operations-to-halve-array-sum/description/)
+
+```c++
+class Solution {
+public:
+    int halveArray(vector<int>& nums) {
+        priority_queue<double> heap;
+        double sum = 0, sum2 = 0;
+        int cnt = 0;
+        for (int i : nums) {
+            sum += i;
+            heap.push(i);
+        }
+        sum2 = sum;
+        while (sum2 - sum * 0.5 >= 1e-6) {
+            double top = 1.0 * heap.top();heap.pop();cout << top << '\n';
+            top *= 0.5;
+            sum2 -= top;
+            heap.push(top);
+            cnt++;
+        }
+        return cnt;
+    }
+};
+```
+
 
 
 # 周赛
