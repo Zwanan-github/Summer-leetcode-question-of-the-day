@@ -993,6 +993,103 @@ public:
 };
 ```
 
+### *** [更新数组后处理求和查询](https://leetcode.cn/problems/handling-sum-queries-after-update/description/)
+
+线段树模板题
+
+```c++
+#define lc p<<1
+#define rc p<<1|1
+const int N = 100005;
+typedef long long ll;
+
+class Solution {
+public:
+    int cnt = 0;
+    struct SegTree{
+        int l, r;
+        ll sum;
+        bool lazy;
+    }tr[N << 2];
+
+    // 建树
+    void build(vector<int>& nums, int p, int l, int r) {
+        tr[p].l = l;
+        tr[p].r = r;
+        tr[p].sum = nums[l - 1];
+        tr[p].lazy = false;
+        if (l == r){
+            return;
+        } 
+        int m = l + r >> 1;
+        build(nums, lc, l, m);
+        build(nums, rc, m + 1, r);
+        tr[p].sum = tr[lc].sum + tr[rc].sum;
+    }
+
+    ll query(int p, int l, int r) {
+        if (l <= tr[p].l && r >= tr[p].r) {
+            return tr[p].sum;
+        }
+        push_down(p);
+        int mid = tr[p].l + tr[p].r >> 1;
+        ll sum = 0;
+        if (l <= mid) sum += query(lc, l, r);
+        if (r > mid) sum += query(rc, l, r);
+        return sum;
+    }
+
+    void push_down(int p) {
+        // p区间 lazy了
+        if (tr[p].lazy) {
+            // 更新p的子节点lazy
+            tr[lc].sum = tr[lc].r - tr[lc].l + 1 - tr[lc].sum;
+            tr[rc].sum = tr[rc].r - tr[rc].l + 1 - tr[rc].sum;
+            tr[lc].lazy = !tr[lc].lazy;
+            tr[rc].lazy = !tr[rc].lazy;
+            tr[p].lazy = !tr[p].lazy;
+        }
+    }
+
+    // 区间修改(反转)
+    void update(int p, int l, int r) {
+        // 修改的区间在当前节点的范围内
+        if (l <= tr[p].l && tr[p].r <= r) {
+            // 区间取反后的和
+            tr[p].sum = (tr[p].r - tr[p].l + 1) - tr[p].sum;
+            tr[p].lazy = !tr[p].lazy;
+            return;
+        }
+        push_down(p);
+        int m = tr[p].l + tr[p].r >> 1;
+        if (l <= m) update(lc, l, r);
+        if (m < r) update(rc, l, r);
+        tr[p].sum = tr[lc].sum + tr[rc].sum;
+    }
+
+    // 线段树问题
+    vector<long long> handleQuery(vector<int>& nums1, vector<int>& nums2, vector<vector<int>>& queries) {
+        build(nums1, 1, 1, nums1.size());
+        vector<ll> ans;
+        ll sum = 0;
+        for (int i : nums2) sum += i;
+        for (auto& q : queries) {
+            if (q[0] == 1) {
+                update(1, q[1] + 1, q[2] + 1);
+                cout << query(1, 1, nums1.size()) << '\n';
+            } else if (q[0] == 2) {
+                cout << sum << "+" << query(1, 1, nums1.size()) << "*" << q[1] << " ";
+                sum += (ll) query(1, 1, nums1.size()) * q[1];
+                cout << sum << '\n';
+            } else if (q[0] == 3) {
+                ans.push_back(sum);
+            }
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
