@@ -1090,6 +1090,29 @@ public:
 };
 ```
 
+### [删除每行中的最大值 - 2023/7/27](https://leetcode.cn/problems/delete-greatest-value-in-each-row/description/)
+
+```c++
+class Solution {
+public:
+    int deleteGreatestValue(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size(); 
+        for (int i = 0; i < n; ++ i) {
+            sort(grid[i].begin(), grid[i].end());
+        }
+        int sum = 0;
+        for (int i = m - 1; i >= 0; -- i) {
+            int maxn = 0;
+            for (int j = 0; j < n; ++ j) {
+                maxn = max(maxn, grid[j][i]);
+            }
+            sum += maxn;
+        }
+        return sum;
+    }
+};
+```
+
 
 
 # 周赛
