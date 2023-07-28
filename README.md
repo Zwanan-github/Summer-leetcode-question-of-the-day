@@ -1113,6 +1113,88 @@ public:
 };
 ```
 
+### ***[并行课程 III - 2023/7/28](https://leetcode.cn/problems/parallel-courses-iii/description/)
+
+深搜 + 记忆化解法
+
+```c++
+class Solution {
+public:
+
+    vector<vector<int>> pres;
+    vector<int> dp;
+
+    void dfs(int x, vector<int>& time) {
+        if (dp[x]) {
+            return;
+        }
+        for (auto& pre : pres[x]) {
+            dfs(pre, time);
+            dp[x] = max(dp[x], dp[pre]);
+        }
+        dp[x] += time[x];
+    }
+
+    int minimumTime(int n, vector<vector<int>>& relations, vector<int>& time) {
+        int ans = 0;
+        dp.resize(n, 0);
+        pres.resize(n);
+        for (auto& relation : relations) { 
+            pres[relation[1] - 1].push_back(relation[0] - 1);
+        }
+        for (int i = 0; i < n; ++ i) {
+            dfs(i, time);
+            ans = max(ans, dp[i]);
+        }
+        return ans;
+    }
+};
+```
+
+拓扑排序解法
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> pres;
+    vector<int> dp;
+    vector<int> indegs;
+    int ans = 0;
+
+    int minimumTime(int n, vector<vector<int>>& relations, vector<int>& time) {
+        pres.resize(n);
+        dp.resize(n);
+        indegs.resize(n);
+        // 记录入度
+        for (auto& relation : relations) {
+            pres[relation[0] - 1].push_back(relation[1] - 1);
+            indegs[relation[1] - 1]++;
+        }
+        queue<int> q;
+        // 先把入读为0的点放入
+        for (int i = 0; i < n; ++ i) {
+            if (indegs[i] == 0) {
+                dp[i] += time[i];
+                q.push(i);
+                ans = max(ans, dp[i]);
+            }
+        }
+        // 拓扑排序
+        while (!q.empty()) {
+            auto x = q.front();q.pop();
+            for (int pre : pres[x]) {
+                if (--indegs[pre] == 0) {
+                    q.push(pre);
+                }
+                dp[pre] = max(dp[pre], dp[x] + time[pre]);
+                ans = max(ans, dp[pre]);
+            }
+        }
+        return ans;
+    }
+};
+```
+
 
 
 # 周赛
