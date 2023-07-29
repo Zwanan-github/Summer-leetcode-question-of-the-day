@@ -1195,6 +1195,34 @@ public:
 };
 ```
 
+### [环形链表 - 2023/7/29](https://leetcode.cn/problems/linked-list-cycle/description/)
+
+快慢指针追赶
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        // 快慢指针追赶
+        ListNode* fast = head, *slow = head;
+        while (fast != NULL && fast->next != NULL && slow != NULL) {
+            fast = fast->next->next;
+            slow = slow->next;
+            if (fast == slow) return true;
+        }
+        return false;
+    }
+};
+```
+
 
 
 # 周赛
