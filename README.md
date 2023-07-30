@@ -1223,6 +1223,25 @@ public:
 };
 ```
 
+### [环形链表 II - 2023/7/30](https://leetcode.cn/problems/linked-list-cycle-ii/description/)
+
+哈希表解法
+
+```c++
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        map<ListNode*, int> map;
+        while (head != NULL) {
+            map[head]++;
+            if (map[head] == 2) return head;
+            head = head->next;
+        }
+        return NULL;
+    }
+};
+```
+
 
 
 # 周赛
@@ -2055,3 +2074,194 @@ public:
 ### [6942. 树中可以形成回文的路径数](https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/)
 
 太困难学不来一点
+
+## [第 356 场周赛 - 2023/7/30](https://leetcode.cn/contest/weekly-contest-356/)
+
+### [6917. 满足目标工作时长的员工数目](https://leetcode.cn/problems/number-of-employees-who-met-the-target/description/)
+
+签到题
+
+```c++
+class Solution {
+public:
+    int numberOfEmployeesWhoMetTarget(vector<int>& hours, int target) {
+        int ans = 0;
+        for (int i : hours) {
+            if (i >= target) ++ans;
+        }
+        return ans;
+    }
+};
+```
+
+### [6900. 统计完全子数组的数目](https://leetcode.cn/problems/count-complete-subarrays-in-an-array/)
+
+$O(n^2)$滑动窗口
+
+```c++
+class Solution {
+public:
+    int countCompleteSubarrays(vector<int>& nums) {
+        int m = set<int>(nums.begin(), nums.end()).size(); 
+        int ans = 0;
+        // 枚举左边界
+        for (int i = 0; i < nums.size(); ++ i) {
+            set<int> cnt;
+            for (int j = i; j < nums.size(); ++ j) {
+                cnt.insert(nums[j]);
+                if (cnt.size() == m) ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+$O(n)$滑动窗口
+
+```c++
+class Solution {
+public:
+    int countCompleteSubarrays(vector<int>& nums) {
+        int m = set<int>(nums.begin(), nums.end()).size(); 
+        int ans = 0;
+        map<int,int> cnt;
+        int l = 0;
+        // 枚举左右边界
+        // 如果当数字到达要求长度，就可以开始移动左端点判断左边有多少重复部分情况（后面每次累加）
+        for (int i = 0; i < nums.size(); ++ i) {
+            ans += l;
+            cnt[nums[i]]++;
+            while (cnt.size() == m) {
+                ans ++;
+                cnt[nums[l]]--;
+                if (cnt[nums[l]] == 0) {
+                    cnt.erase(nums[l]);
+                }
+                ++l;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+### [6918. 包含三个字符串的最短字符串](https://leetcode.cn/problems/shortest-string-that-contains-three-strings/)
+
+```c++
+class Solution {
+public:
+
+
+    string f(string a, string b, string c) {
+        string s = "";
+        if (a.find(b) != -1) s = a;
+        if (b.find(a) != -1) s = b;
+        for (int i = min(a.size(), b.size()); i > 0; i --) {
+            if (a.substr(a.size() - i, i) == b.substr(0, i)) {
+                s = a + b.substr(i, b.size() - i);
+                break;
+            }
+        }
+        if (s == "") s = a + b;
+        if (s.find(c) != -1) return s;
+        if (c.find(s) != -1) return c;
+        for (int i = min(s.size(), c.size()); i > 0; i --) {
+            if (s.substr(s.size() - i, i) == c.substr(0, i)) 
+                return s + c.substr(i, c.size() - i);
+        }
+        return s + c;
+    }
+
+    static bool cmp(const string& a, const string& b) {
+        if (a.size() != b.size()) return a.size() < b.size();
+        return a < b;
+    }
+
+    string minimumString(string a, string b, string c) {
+        // 定义排序
+        multiset<string, decltype(cmp)*> set(cmp);
+        set.insert(f(a, b, c));
+        set.insert(f(a, c, b));
+        set.insert(f(b, a, c));
+        set.insert(f(b, c, a));
+        set.insert(f(c, b, a));
+        set.insert(f(c, a, b));
+        return *set.begin();
+    }
+};
+```
+
+### [6957. 统计范围内的步进数字数目](https://leetcode.cn/problems/count-stepping-numbers-in-range/)
+
+数位dp+高精度
+
+```c++
+class Solution {
+public:
+    const long long MOD = 1e9 + 7;
+    
+    // 不开long long见祖宗
+    long long dp[105][12];
+    vector<int> d;
+    
+    void showd() {
+        for (int i = 1; i < d.size(); i++) cout << d[i] << " ";
+        cout << endl;
+    }
+    
+    long long query(const string& s) {
+        int tot = s.size();
+        d.resize(tot + 1);
+        for (int i = 0; i < s.size(); i++) {
+            d[i + 1] = s[i] - '0';
+        }
+        reverse(d.begin() + 1, d.end());
+        //showd();
+        
+        long long res = 0;
+        for (int i = 1; i < tot; i++) {
+            for (int j = 1; j <= 9; j++) {
+                res += dp[i][j];
+            }
+        }
+        for (int j = 1; j < d[tot]; j++) res += dp[tot][j];
+        
+        for (int i = tot - 1; i >= 1; i--) {
+            for (int j = 0; j <= d[i] - 1; j++) {
+                if (abs(j - d[i + 1]) == 1) res += dp[i][j];
+            }
+            if (abs(d[i + 1] - d[i]) != 1) break;
+        }
+        //cout << s << ": " << res << endl;
+        return res;
+    }
+    
+    string plusOne(string& digits) {
+        int n = digits.size();
+        while(n && ++digits[--n] == 10) digits[n] = 0;
+        if(digits[0] == 0) digits.insert(begin(digits), 1);
+        return digits;
+    }
+    
+    int countSteppingNumbers(string low, string high) {
+        for (int i = 0; i <= 9; i++) dp[1][i] = 1;
+        for (int i = 2; i <= 100; i++) {
+            for (int j = 0; j <= 9; j++) {
+                for (int k = 0; k <= 9; k++) {
+                    if (abs(j - k) == 1) {
+                        dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;
+                    }
+                }
+            }
+        }
+        plusOne(high);
+        long long res = (query(high) - query(low)) % MOD;
+        return res % MOD;
+    }
+};
+
+```
+
+
+
