@@ -1242,7 +1242,60 @@ public:
 };
 ```
 
+### [重排链表 - 2023/7/31](https://leetcode.cn/problems/reorder-list/description/)
 
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        stack<ListNode*> stack;
+        queue<ListNode*> queue;
+        ListNode* t = head;
+        while (t != nullptr) {
+            stack.push(t);
+            queue.push(t);
+            t = t->next;
+        }
+        ListNode* m = new ListNode();
+        m->next = head;
+        int size = stack.size();
+        int i = 1;
+        while (!stack.empty() && !queue.empty()) {
+            auto pos_top = queue.front();queue.pop();
+            auto neg_top = stack.top();stack.pop();
+            if (i == (size + 1) / 2 && size - size / 2 != size / 2) {
+                m->next = pos_top;
+                m = m->next;
+                m->next = nullptr;
+                break;
+            } else if (i == (size + 1) / 2 && size - size / 2 == size / 2) {
+                m->next = pos_top;
+                m = m->next;
+                m->next = neg_top;
+                m = m->next;
+                m->next = nullptr;
+                break;
+            }  else {
+                m->next = pos_top;
+                m = m->next;
+                m->next = neg_top;
+                m = m->next;
+            }
+            ++i;
+        }
+    }
+};
+```
 
 # 周赛
 
