@@ -1,5 +1,7 @@
 # 暑假每日一题
 
+## 七月
+
 ### [两数之和 - 2023/7/1](https://leetcode.cn/problems/two-sum/)
 
 ```c++
@@ -1296,6 +1298,33 @@ public:
     }
 };
 ```
+
+## 八月
+
+### [**英雄的力量 - 2023/8/1](https://leetcode.cn/problems/power-of-heroes/description/)
+
+有点难想出来[题解](https://leetcode.cn/problems/power-of-heroes/solutions/2367375/dong-tai-gui-hua-xuan-yu-bu-xuan-by-zwan-cya5/)
+
+```py
+class Solution:
+    def sumOfPower(self, nums: List[int]) -> int:
+        # 以 a_i 为最大值的时候
+        # 到 i 处的力量和为 ans += a[i]^2 * (prefix[i - 1] + a[i])
+        # 每个点的prefix[i] = (prefix[i - 1] + x) + (prefix[i - 1])
+        #                        选                   不选
+        ans, mod = 0, 10**9 + 7
+        nums.sort()
+        p = 0
+        for i, x in enumerate(nums):
+            ans = (ans + ((x * x)%mod)*(p + x))%mod
+            p = p * 2 + x
+        return ans
+        
+```
+
+
+
+
 
 # 周赛
 
