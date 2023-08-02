@@ -1322,6 +1322,25 @@ class Solution:
         
 ```
 
+### [翻转卡片游戏 - 2023-8-2](https://leetcode.cn/problems/card-flipping-game/description/)
+
+出个破题，整的看一会没看懂
+
+```py
+class Solution:
+    def flipgame(self, fronts: List[int], backs: List[int]) -> int:
+        jump = []
+        ans = 0xffffffff
+        for p, q in zip(fronts, backs):
+            if p == q:
+                jump.append(p)
+        n = len(fronts)
+        for i in range(n):
+            if fronts[i] not in jump: ans = min(ans, fronts[i])
+            if backs[i] not in jump: ans = min(ans, backs[i])
+        return ans if ans != 0xffffffff else 0
+```
+
 
 
 
