@@ -1322,7 +1322,7 @@ class Solution:
         
 ```
 
-### [翻转卡片游戏 - 2023-8-2](https://leetcode.cn/problems/card-flipping-game/description/)
+### [翻转卡片游戏 - 2023/8/2](https://leetcode.cn/problems/card-flipping-game/description/)
 
 出个破题，整的看一会没看懂
 
@@ -1339,6 +1339,41 @@ class Solution:
             if fronts[i] not in jump: ans = min(ans, fronts[i])
             if backs[i] not in jump: ans = min(ans, backs[i])
         return ans if ans != 0xffffffff else 0
+```
+
+### [删除注释 - 2023/8/3](https://leetcode.cn/problems/remove-comments/description/)
+
+恶心的模拟
+
+```py
+class Solution:
+    def removeComments(self, source: List[str]) -> List[str]:
+        cur = ""
+        state = 0
+        ans = []
+        for s in source:
+            i = 0
+            while i < len(s):
+                if i + 1 < len(s):
+                    if s[i] == '/' and s[i + 1] == '/' and state == 0:
+                        break
+                    elif s[i] == '/' and s[i + 1] == '*':
+                        if state == 0:
+                            state = 1
+                            i += 1
+                    elif s[i] == '*' and s[i + 1] == '/':
+                        if state == 1:
+                            state = 0
+                            i += 2
+                            continue
+                if state == 0:
+                    cur += s[i]
+                i += 1
+            if state == 0: 
+                if len(cur) > 0:
+                    ans.append(cur)
+                cur = ""
+        return ans
 ```
 
 
