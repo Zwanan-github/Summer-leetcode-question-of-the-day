@@ -1376,6 +1376,37 @@ class Solution:
         return ans
 ```
 
+### [不同路径 III - 2023/8/4](https://leetcode.cn/problems/unique-paths-iii/description/)
+
+```py
+class Solution:
+    def uniquePathsIII(self, grid: List[List[int]]) -> int:
+        n, m = len(grid), len(grid[0])
+
+        def dfs(x: int, y: int, cnt: int) -> int:
+            if x < 0 or x >= n or y < 0 or y >= m or grid[x][y] < 0:
+                return 0
+            if grid[x][y] == 2:
+                # 剩余的点是0才算
+                return cnt == 0
+            grid[x][y] = -1
+            ans = dfs(x - 1, y, cnt - 1) + \
+                  dfs(x, y - 1, cnt - 1) + \
+                  dfs(x + 1, y, cnt - 1) + \
+                  dfs(x, y + 1, cnt - 1)
+            grid[x][y] = 0
+            return ans
+        start = []
+        cnt = 0
+        for i, x in enumerate(grid):
+            for j, y in enumerate(x):
+                if y == 1:
+                    start = [i, j]
+                if y == 0 or y == 1:
+                    cnt += 1 
+        return dfs(start[0], start[1], cnt)
+```
+
 
 
 
