@@ -1438,6 +1438,33 @@ class Solution:
         return ans.next
 ```
 
+### [两两交换链表中的节点 - 2023/8/6](https://leetcode.cn/problems/swap-nodes-in-pairs/description/)
+
+```py
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head == None or head.next == None: return head
+        dummy = ListNode(0, head)
+        t = dummy
+        sl = dummy.next
+        while sl != None and sl.next != None:
+            fa = sl.next
+            print(sl.val)
+            print()
+            print(fa.val)
+            t.next = fa
+            sl.next = fa.next
+            fa.next = sl
+            t = sl
+            sl = sl.next
+        return dummy.next
+```
+
 
 
 
@@ -2461,5 +2488,61 @@ public:
 
 ```
 
+##  [第 110 场双周赛 - 2023/8/5](https://leetcode.cn/contest/biweekly-contest-110/)
 
+### [6990. 取整购买后的账户余额](https://leetcode.cn/problems/account-balance-after-rounded-purchase/description/)
 
+加五自动向最近整数取整了（小羊大佬）
+
+```py
+class Solution:
+    def accountBalanceAfterPurchase(self, purchaseAmount: int) -> int:
+        return 100 - int((purchaseAmount + 5) / 10) * 10
+```
+
+### [6940. 在链表中插入最大公约数](https://leetcode.cn/problems/insert-greatest-common-divisors-in-linked-list/)
+
+```py
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def insertGreatestCommonDivisors(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        fa, sl = head.next, head
+        while fa != None:
+            gcd_ = ListNode(gcd(fa.val, sl.val), fa)
+            print(gcd_.val)
+            sl.next = gcd_
+            sl = fa
+            fa = fa.next
+        return head
+```
+
+### [6956. 使循环数组所有元素相等的最少秒数](https://leetcode.cn/problems/minimum-seconds-to-equalize-a-circular-array/)
+
+死于处理问题不恰当（走弯路）
+
+```py
+class Solution:
+    def minimumSeconds(self, nums: List[int]) -> int:
+        n = len(nums)
+        # 使用map<int, list>来记录
+        pos = defaultdict(list)
+        for i, x in enumerate(nums):
+            pos[x].append(i)
+        ans = n
+        for [k, v] in pos.items():
+            # 解决首尾的环形问题（灵神）
+            v.append(v[0] + n)
+            cnt = 0
+            for i in range(len(v) - 1):
+                cnt = max(cnt, (v[i + 1] - v[i]) // 2)
+            ans = min(ans, cnt)
+        return ans
+```
+
+### [6987. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/description/)
+
+高难度DP做不了一点
