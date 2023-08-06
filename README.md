@@ -1465,6 +1465,17 @@ class Solution:
         return dummy.next
 ```
 
+### [反转字符串 - 2023/8/7](https://leetcode.cn/problems/reverse-string/description/)
+
+```py
+class Solution:
+    def reverseString(self, s: List[str]) -> None:
+        """
+        Do not return anything, modify s in-place instead.
+        """
+        return s.reverse()
+```
+
 
 
 
