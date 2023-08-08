@@ -1476,6 +1476,46 @@ class Solution:
         return s.reverse()
 ```
 
+### [任意子数组和的绝对值的最大值 - 2023/8/8](https://leetcode.cn/problems/maximum-absolute-sum-of-any-subarray/description/) 
+
+动态规划
+
+```py
+class Solution:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        n, INF = len(nums), 0x3f3f3f3f
+        # f[i] 表示以 a[i] 结尾的最大的子数组和
+        f = [-INF] * n
+        # neg[i] 表示以 a[i] 结尾的最大的子数组和
+        neg = [INF] * n
+        f[0] = max(nums[0], 0)
+        neg[0] = min(nums[0], 0)
+        ans = max(f[0], -neg[0])
+        for i in range(1, n):
+            f[i] = max(f[i - 1], 0) + nums[i]
+            neg[i] = min(neg[i - 1], 0) + nums[i]
+            ans = max(ans, f[i], -neg[i])
+        return ans 
+```
+
+状态压缩
+
+```py
+class Solution:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        n, INF = len(nums), 0x3f3f3f3f
+        # f[i] 表示以 a[i] 结尾的最大的子数组和
+        f = 0
+        # neg[i] 表示以 a[i] 结尾的最大的子数组和
+        neg = 0
+        ans = 0
+        for i, x in enumerate(nums):
+            f = max(f, 0) + x
+            neg = min(neg, 0) + x
+            ans = max(ans, f, -neg)
+        return ans 
+```
+
 
 
 
