@@ -1516,7 +1516,20 @@ class Solution:
         return ans 
 ```
 
+### [整数的各位积和之差](https://leetcode.cn/problems/subtract-the-product-and-sum-of-digits-of-an-integer/description/)
 
+```py
+class Solution:
+    def subtractProductAndSum(self, n: int) -> int:
+        mul = 1
+        sum = 0
+        while n != 0:
+            t = int(n % 10)
+            n = int(n / 10)
+            mul = mul * t
+            sum += t
+        return mul - sum
+```
 
 
 
