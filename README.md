@@ -1531,6 +1531,24 @@ class Solution:
         return mul - sum
 ```
 
+### [下降路径最小和 II - 2023/8/10](https://leetcode.cn/problems/minimum-falling-path-sum-ii/description/)
+
+```py
+class Solution:
+    def minFallingPathSum(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        f = [[0] * n] * n
+        for i in range(n):
+            f[0][i] = grid[0][i]
+        for i in range(0, n - 1):
+            # 取上一行的最小和次小
+            mn, mn2 = nsmallest(2, f[i])
+            # 对当前行进行计算
+            for j, k in enumerate(f[i]):
+                f[i + 1][j] = grid[i + 1][j] + (mn if k != mn else mn2)
+        return min(f[-1]) 
+```
+
 
 
 # 周赛
