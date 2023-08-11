@@ -1516,7 +1516,7 @@ class Solution:
         return ans 
 ```
 
-### [整数的各位积和之差](https://leetcode.cn/problems/subtract-the-product-and-sum-of-digits-of-an-integer/description/)
+### [整数的各位积和之差 - 2023/8/9](https://leetcode.cn/problems/subtract-the-product-and-sum-of-digits-of-an-integer/description/)
 
 ```py
 class Solution:
@@ -1547,6 +1547,19 @@ class Solution:
             for j, k in enumerate(f[i]):
                 f[i + 1][j] = grid[i + 1][j] + (mn if k != mn else mn2)
         return min(f[-1]) 
+```
+
+### [矩阵对角线元素的和 - 2023/8/11](https://leetcode.cn/problems/matrix-diagonal-sum/description/)
+
+```py
+class Solution:
+    def diagonalSum(self, mat: List[List[int]]) -> int:
+        n, idx, ans = len(mat), 0, 0
+        for i, x in enumerate(mat):
+            ans += x[i] + x[n - i - 1]
+            if n - i - 1 == i:
+                ans -= x[i]
+        return ans
 ```
 
 
