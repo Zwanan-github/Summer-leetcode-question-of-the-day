@@ -1562,6 +1562,42 @@ class Solution:
         return ans
 ```
 
+### [合并 K 个升序链表 - 2023/8/12](https://leetcode.cn/problems/merge-k-sorted-lists/description/)
+
+$O(n^2)$直接过
+
+```py
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        ans = ListNode(0, None)
+        t = ans
+        n, INF = len(lists), 0x3f3f3f3f
+        while n != 0:
+            min_node = ListNode(INF)
+            min_lidx = -1
+            for i, x in enumerate(lists):
+                if x == None: 
+                    continue
+                if x.val < min_node.val:
+                    min_node = x
+                    min_lidx = i
+            if min_node.val == INF or min_lidx == -1:
+                break
+            t.next = min_node
+            t = t.next
+            lists[min_lidx] = lists[min_lidx].next
+            if lists[min_lidx] == None: 
+                n += 1
+        return ans.next
+```
+
+
+
 
 
 # 周赛
