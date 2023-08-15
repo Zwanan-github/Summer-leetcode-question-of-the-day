@@ -1664,6 +1664,25 @@ class Solution:
         return dfs(root1, root2)
 ```
 
+### [字符串中的查找与替换 - 2023/8/15](https://leetcode.cn/problems/find-and-replace-in-string/description/)
+
+```py
+class Solution:
+    def findReplaceString(self, s: str, indices: List[int], sources: List[str], targets: List[str]) -> str:
+        diff_len = 0
+        # 创建元组来对整体排序
+        tp = list(zip(indices, sources, targets))
+        tp.sort(key=lambda k : k[0])
+        print(tp)
+        for ind, sour, targ in tp:
+            ind = ind + diff_len
+            if s[ind : ind + len(sour)] == sour:
+                print(s[ind : ind + len(sour)])
+                s = s[:ind] + targ + s[ind + len(sour):]
+                diff_len += len(targ) - len(sour)
+        return s
+```
+
 
 
 # 周赛
