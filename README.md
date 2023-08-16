@@ -1683,6 +1683,24 @@ class Solution:
         return s
 ```
 
+### [找出转圈游戏输家 - 2023/8/16](https://leetcode.cn/problems/find-the-losers-of-the-circular-game/description/)
+
+```py
+class Solution:
+    def circularGameLosers(self, n: int, k: int) -> List[int]:
+        ans = list(range(2, n + 1))
+        idx = 1
+        i = 1
+        while True:
+            idx = ((idx + i * k - 1) % n) + 1
+            i = i + 1 
+            if idx not in ans:
+                break
+            else:
+                ans.remove(idx)
+        return ans
+```
+
 
 
 # 周赛
