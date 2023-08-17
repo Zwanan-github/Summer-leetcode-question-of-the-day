@@ -1701,6 +1701,109 @@ class Solution:
         return ans
 ```
 
+### [切披萨的方案数 - 2023/8/17](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/description/)
+
+#### 深搜 + 记忆化
+
+```py
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        MOD = 10**9 + 7
+        ms = MatrixSum(pizza)
+        m, n = len(pizza), len(pizza[0])
+        # 记忆化减少重复计算次数
+        @cache
+        def dfs(x: int, i1: int, j1: int):
+            if x == 0:
+                return 1 if ms.query(i1, j1, m, n) else 0
+            res = 0
+            # 竖着切
+            for j2 in range(j1, n):
+                if ms.query(i1, j1, m, j2):
+                    res += dfs(x - 1, i1, j2)
+            for i2 in range(i1, m):
+                if ms.query(i1, j1, i2, n):
+                    res += dfs(x - 1, i2, j1)
+            return res % MOD
+        return dfs(k - 1, 0, 0)
+class MatrixSum:
+    def __init__(self, matrix: List[str]):
+        m, n = len(matrix), len(matrix[0])
+        s = [[0] * (n + 1) for _ in range(m + 1)]
+        for i, row in enumerate(matrix):
+            for j, x in enumerate(row):
+                s[i + 1][j + 1] = s[i + 1][j] + s[i][j + 1] - s[i][j] + (x == 'A')
+        self.s = s
+    def query(self, r1: int, c1: int, r2: int, c2: int) -> int:
+        return self.s[r2][c2] + self.s[r1][c1] - self.s[r1][c2] - self.s[r2][c1]
+```
+
+#### 递推
+
+* $f[k][i][j]$ 
+
+```py
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        MOD = 10**9 + 7
+        ms = MatrixSum(pizza)
+        m, n = len(pizza), len(pizza[0])
+        # f[k][m][n]
+        f = [[[0] * n for _ in range(m)] for _ in range(k)]
+        for c in range(k):
+            for i in range(m):
+                for j in range(n):
+                    if c == 0:
+                        f[c][i][j] = 1 if ms.query(i, j, m, n) else 0
+                        continue
+                    res = 0
+                    for j2 in range(j, n):
+                        if ms.query(i, j, m, j2):
+                            res += f[c - 1][i][j2]
+                    for i2 in range(i, m):
+                        if ms.query(i, j, i2, n):
+                            res += f[c - 1][i2][j]
+                    f[c][i][j] = res % MOD
+        return f[k - 1][0][0]
+
+class MatrixSum:
+    """
+    省略二位前缀和模板
+    """
+```
+
+* 状态优化
+
+```py
+class Solution:
+    def ways(self, pizza: List[str], k: int) -> int:
+        MOD = 10**9 + 7
+        ms = MatrixSum(pizza)
+        m, n = len(pizza), len(pizza[0])
+        # f[k][m][n]
+        f = [[0] * n for _ in range(m)]
+        for c in range(k):
+            for i in range(m):
+                for j in range(n):
+                    if c == 0:
+                        f[i][j] = 1 if ms.query(i, j, m, n) else 0
+                        continue
+                    res = 0
+                    for j2 in range(j, n):
+                        if ms.query(i, j, m, j2):
+                            res += f[i][j2]
+                    for i2 in range(i, m):
+                        if ms.query(i, j, i2, n):
+                            res += f[i2][j]
+                    f[i][j] = res % MOD
+        return f[0][0]
+
+class MatrixSum:
+    """
+    省略二位前缀和模板
+    """
+```
+
 
 
 # 周赛
