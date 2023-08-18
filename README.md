@@ -1804,6 +1804,25 @@ class MatrixSum:
     """
 ```
 
+### [3n 块披萨 - 2023/8/18](https://leetcode.cn/problems/pizza-with-3n-slices/description/)
+
+```py
+class Solution:
+    def maxSizeSlices(self, slices: List[int]) -> int:
+        # 判断开始的位置: 0, 1 分成两组情况
+        n = len(slices)
+        k = n // 3
+        def maxSum(slices) -> int:
+            m = len(slices)
+            dp = [[0] * (k + 1) for _ in range(m + 1)]
+            for i in range(1, m + 1):
+                for j in range(1, k + 1):
+                    dp[i][j] = max(dp[i - 1][j], dp[i - 2][j - 1] + slices[i - 1])
+            return dp[m][k]
+        # 选0就从0开始到n - 1， 不然就从 1 开始
+        return max(maxSum(slices[1:]), maxSum(slices[:-1]))
+```
+
 
 
 # 周赛
