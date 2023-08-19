@@ -1823,6 +1823,16 @@ class Solution:
         return max(maxSum(slices[1:]), maxSum(slices[:-1]))
 ```
 
+### [两整数相加 - 2023/8/19](https://leetcode.cn/problems/add-two-integers/description/)
+
+签到小丑题
+
+```py
+class Solution:
+    def sum(self, num1: int, num2: int) -> int:
+        return num1 + num2
+```
+
 
 
 # 周赛
