@@ -1833,6 +1833,32 @@ class Solution:
         return num1 + num2
 ```
 
+### [判断根结点是否等于子结点之和 - 2023/8/20](https://leetcode.cn/problems/root-equals-sum-of-children/description/)
+
+签到
+
+```py
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def checkTree(self, root: Optional[TreeNode]) -> bool:
+        ans = root.val
+        def dfs(x: Optional[TreeNode]):
+            nonlocal ans
+            if x == None:
+                return
+            ans -= x.val
+            dfs(x.left)
+            dfs(x.right)
+        dfs(root.left)
+        dfs(root.right)
+        return ans == 0
+```
+
 
 
 # 周赛
@@ -2912,3 +2938,162 @@ class Solution:
 ### [6987. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/description/)
 
 高难度DP做不了一点
+
+## [第 111 场双周赛 - 2023/8/19](https://leetcode.cn/contest/biweekly-contest-111/)
+
+### [6954. 统计和小于目标的下标对数目](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/)
+
+直接暴力
+
+```py
+class Solution:
+    def countPairs(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        ans = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                if nums[i] + nums[j] < target:
+                    ans += 1
+        return ans
+```
+
+### [8014. 循环增长使字符串子序列等于另一个字符串](https://leetcode.cn/problems/make-string-a-subsequence-using-cyclic-increments/)
+
+暴力
+
+```py
+class Solution:
+    def canMakeSubsequence(self, str1: str, str2: str) -> bool:
+        n1, n2 = len(str1) - 1, len(str2) - 1
+        while n1 >= 0 and n2 >= 0:
+            ans = (ord(str2[n2]) - ord(str1[n1]))%26
+            if str1[n1] == 'z' and str2[n2] == 'a':
+                n2 -= 1
+                n1 -= 1
+            elif ans == 1 or ans == 0:
+                n2 -= 1
+                n1 -= 1
+            else:
+                n1 -= 1
+        if n2 == -1: 
+            return True
+        return False
+```
+
+### [6941. 将三个组排序](https://leetcode.cn/problems/sorting-three-groups/)
+
+#### 贪心
+
+使用 `总长度` - `最长不减子序列长度` 就是需要修改的最少的步数
+
+```py
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        # 求最长不减子序列长度
+        f = [0 for _ in range(n + 1)]
+        ans = 0
+        for i in range(n):
+            if (f[ans] <= nums[i]):
+                ans += 1
+                f[ans] = nums[i]
+            elif f[ans] > nums[i]:
+                l, r = 1, ans
+                # 二分求单调队列中比当前数字大的最左边界
+                while l < r:
+                    mid = (l + r) >> 1
+                    if f[mid] <= nums[i]:
+                        l = mid + 1
+                    else:
+                        r = mid
+                f[l] = nums[i]
+        return n - ans
+```
+
+#### 状态机DP
+
+`f[i+1][j]` 表示下标为 `i` 时值为 `j` 的值，由 `f[i][k]` 推过来
+
+`f[i+1][j] = min(f[i][k]) + (j != nums[i])`
+
+```py
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0] * 4 for _ in range(n + 1)]
+        for i, x in enumerate(nums):
+            for j in range(1, 4):
+                f[i + 1][j] = inf
+                for k in range(1, j + 1):
+                    f[i + 1][j] = min(f[i + 1][j], f[i][k])
+                f[i + 1][j] += (j != x)
+        return min(f[n][1:])
+```
+
+### [8013. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/description/)
+
+数位DP
+
+```py
+class Solution:
+    def numberOfBeautifulIntegers(self, low: int, high: int, k: int) -> int:
+        def calc(high: int) -> int:
+            s = str(high)
+            @cache  # 记忆化搜索
+            def dfs(i: int, val: int, diff: int, is_limit: bool, is_num: bool) -> int:
+                if i == len(s):
+                    return int(is_num and val == 0 and diff == 0)  # 找到了一个合法数字
+                res = 0
+                if not is_num:  # 可以跳过当前数位
+                    res = dfs(i + 1, val, diff, False, False)
+                d0 = 0 if is_num else 1  # 如果前面没有填数字，必须从 1 开始（因为不能有前导零）
+                up = int(s[i]) if is_limit else 9  # 如果前面填的数字都和 high 的一样，那么这一位至多填 s[i]（否则就超过 high 啦）
+                for d in range(d0, up + 1):  # 枚举要填入的数字 d
+                    res += dfs(i + 1, (val * 10 + d) % k, diff + d % 2 * 2 - 1, is_limit and d == up, True)
+                return res
+            return dfs(0, 0, 0, True, False)
+        return calc(high) - calc(low - 1)
+```
+
+
+
+## [第 359 场周赛 - 2023/8/20](https://leetcode.cn/contest/weekly-contest-359/)
+
+### [7004. 判别首字母缩略词](https://leetcode.cn/problems/check-if-a-string-is-an-acronym-of-words/)
+
+```py
+class Solution:
+    def isAcronym(self, words: List[str], s: str) -> bool:
+        ans: str = ""
+        for i, x in enumerate(words):
+            ans += x[0]
+        return ans == s
+```
+
+### [6450. k-avoiding 数组的最小总和](https://leetcode.cn/problems/determine-the-minimum-sum-of-a-k-avoiding-array/)
+
+```py
+class Solution:
+    def minimumSum(self, n: int, k: int) -> int:
+        nums = list()
+        cnt = 0
+        i = 1
+        while cnt < n:
+            if k - i not in nums:
+                print(i)
+                nums.append(i)
+                cnt += 1
+            i += 1
+        return sum(nums)
+```
+
+### [7006. 销售利润最大化](https://leetcode.cn/problems/maximize-the-profit-as-the-salesman/)
+
+```py
+```
+
+### [6467. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)
+
+```py
+```
+
