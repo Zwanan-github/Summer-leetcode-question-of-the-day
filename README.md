@@ -1859,6 +1859,29 @@ class Solution:
         return ans == 0
 ```
 
+### [移动片段得到字符串 - 2023/8/21](https://leetcode.cn/problems/move-pieces-to-obtain-a-string/description/)
+
+```py
+class Solution:
+    def canChange(self, start: str, target: str) -> bool:
+        # 因为不能穿过所以去掉 '_' 之后的字符串是相等的
+        if start.replace('_', '') != target.replace('_', ''):
+            return False
+        l, r = 0, 0
+        for x in start:
+            if  x == '_': 
+                l += 1
+                continue
+            while target[r] == '_':
+                r += 1
+            # 位置不相等，且当前的字符不能合法移动， L 只能向左， R 只能向右
+            if l != r and (x == 'L') == (l < r):
+                return False 
+            l += 1
+            r += 1
+        return True
+```
+
 
 
 # 周赛
@@ -3089,11 +3112,80 @@ class Solution:
 
 ### [7006. 销售利润最大化](https://leetcode.cn/problems/maximize-the-profit-as-the-salesman/)
 
+#### 动态规划 + 二分
+
+时间复杂度  $O(nlogn)$
+
 ```py
+class Solution:
+    def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
+        offers.sort(key=lambda k : k[1])
+        # print(offers)
+        n = len(offers)
+        f = [0 for _ in range(n)]
+        f[0] = offers[0][2]
+        for i in range(1, n):
+            x = offers[i]
+            l, r = 0, n - 1
+            while l < r:
+                mid = (l + r + 1) >> 1
+                if offers[mid][1] < x[0]:
+                    l = mid
+                else:
+                    r = mid - 1
+            if  offers[r][1] < x[0]:
+                f[i] = max(f[i - 1], f[r] + x[2])
+            else:
+                f[i] = max(f[i - 1], x[2])
+        return f[n - 1]
 ```
+
+#### 类似题
+
+* ### [1235. 规划兼职工作 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/description/)
+
+  ```py
+  class Solution:
+      def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
+          offers = list(zip(startTime, endTime, profit))
+          offers.sort(key=lambda k : k[1])
+          print(offers)
+          n = len(offers)
+          f = [0 for _ in range(n)]
+          f[0] = offers[0][2]
+          for i in range(1, n):
+              x = offers[i]
+              l, r = 0, n - 1
+              while l < r:
+                  mid = (l + r + 1) >> 1
+                  if offers[mid][1] <= x[0]:
+                      l = mid
+                  else:
+                      r = mid - 1
+              if  offers[r][1] <= x[0]:
+                  f[i] = max(f[i - 1], f[r] + x[2])
+              else:
+                  f[i] = max(f[i - 1], x[2])
+          return f[n - 1]
+  ```
 
 ### [6467. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)
 
 ```py
+class Solution:
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int: 
+        pos = [[] for _ in range(len(nums) + 1)]
+        for i, x in enumerate(nums):
+            pos[x].append(i - len(pos[x]))
+        ans = 0
+        for ps in pos:
+            if len(ps) <= ans: continue
+            # 同向双指针
+            left = 0
+            for right, p in enumerate(ps):
+                while p - ps[left] > k:  # 要删除的数太多了
+                    left += 1
+                ans = max(ans, right - left + 1)
+        return ans
 ```
 
