@@ -1882,6 +1882,24 @@ class Solution:
         return True
 ```
 
+### [到最近的人的最大距离 - 2023/8/22](https://leetcode.cn/problems/maximize-distance-to-closest-person/description/)
+
+```py
+class Solution:
+    def maxDistToClosest(self, seats: List[int]) -> int:
+        f = [[] for _ in range(2)]
+        for i, x in enumerate(seats):
+            f[x].append(i)
+        ans = 0
+        for i in range(1, len(f[1])):
+            ans = max(ans, (f[1][i] - f[1][i - 1]) >> 1)
+        if 0 in f[0]:
+            ans = max(ans, f[1][0])
+        if len(seats) - 1 in f[0]:
+            ans = max(ans, len(seats) - 1 - f[1][-1])
+        return ans
+```
+
 
 
 # 周赛
