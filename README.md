@@ -1929,6 +1929,29 @@ class Solution:
         return ans
 ```
 
+### [统计参与通信的服务器 - 2023/8/24](https://leetcode.cn/problems/count-servers-that-communicate/description/)
+
+```py
+class Solution:
+    def countServers(self, grid: List[List[int]]) -> int:
+        ans = 0 
+        self.grid = grid
+        m = len(grid)
+        n = len(grid[0])
+        row = Counter()            
+        col = Counter()
+        for i, x in enumerate(grid):
+            for j, y in enumerate(x):
+                if y == 1:
+                    row[i] += 1
+                    col[j] += 1
+        for i, x in enumerate(grid):
+            for j, y in enumerate(x):
+                if y == 1 and (row[i] > 1 or col[j] > 1):
+                    ans += 1
+        return ans
+```
+
 
 
 # 周赛
