@@ -1977,6 +1977,24 @@ class Solution:
         return ans
 ```
 
+### [汇总区间 - 2023/8/26](https://leetcode.cn/problems/summary-ranges/description/)
+
+```py
+class Solution:
+    def summaryRanges(self, nums: List[int]) -> List[str]:
+        l, r, n = 0, 0, len(nums)
+        ans = list()
+        while r < n - 1:
+            if nums[r + 1] - nums[r] != 1:
+                ans.append(str(nums[l]) if l == r else str(nums[l]) + "->" + str(nums[r]))
+                print(ans)
+                l = r + 1
+            r += 1
+        if l < n and r < n:
+            ans.append(str(nums[l]) if l == r else str(nums[l]) + "->" + str(nums[r]))
+        return ans
+```
+
 
 
 # 周赛
