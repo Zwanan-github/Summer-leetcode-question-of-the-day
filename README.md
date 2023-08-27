@@ -1995,6 +1995,32 @@ class Solution:
         return ans
 ```
 
+### [合并区间 - 2023/8/27](https://leetcode.cn/problems/merge-intervals/description/)
+
+```py
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        def cmp(x, y):
+            if x[0] != y[0]:
+                return -1 if x[0] < y[0] else 1
+            else:
+                return -1 if x[1] < y[1] else 1
+        n = len(intervals)
+        intervals.sort(key = cmp_to_key(cmp))
+        print(intervals)
+        l, r = intervals[0][0], intervals[0][1]
+        ans = list()
+        for i in range(0, n):
+            if r < intervals[i][0]:
+                ans.append([l, r])
+                l = intervals[i][0]
+                r = intervals[i][1]
+            elif r < intervals[i][1]:
+                r = intervals[i][1]
+        ans.append([l, r])
+        return ans
+```
+
 
 
 # 周赛
