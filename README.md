@@ -3328,3 +3328,57 @@ class Solution:
         return ans
 ```
 
+## [第 360 场周赛 - 2023/8/27](https://leetcode.cn/contest/weekly-contest-360/)
+
+### [8015. 距离原点最远的点](https://leetcode.cn/problems/furthest-point-from-origin/description/)
+
+```py
+class Solution:
+    def furthestDistanceFromOrigin(self, moves: str) -> int:
+        cnt = Counter() 
+        for x in moves:
+            cnt[x] += 1
+        return abs(cnt['R'] - cnt['L']) + cnt['_']
+```
+
+### [8022. 找出美丽数组的最小和](https://leetcode.cn/problems/find-the-minimum-possible-sum-of-a-beautiful-array/)
+
+```py
+class Solution:
+    def minimumPossibleSum(self, n: int, target: int) -> int:
+        vis = Counter()
+        i = cnt = 1
+        ans = 0
+        while cnt <= n:
+            if vis[i] != 1:
+                ans += i
+                vis[i] = 1
+                vis[target - i] = 1
+                cnt += 1
+            i += 1
+        return ans
+```
+
+### [2835. 使子序列的和等于目标的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-form-subsequence-with-target-sum/description/)
+
+太难了~
+
+```py
+class Solution:
+    def minOperations(self, nums: List[int], target: int) -> int:
+        if sum(nums) < target:
+            return -1
+        cnt = Counter(nums)
+        ans = s = i = 0
+        while 1 << i <= target:
+            s += cnt[1 << i] << i
+            mask = (1 << (i + 1)) - 1
+            i += 1
+            if s >= target & mask:
+                continue
+            ans += 1  # 一定要找更大的数操作
+            while cnt[1 << i] == 0:
+                ans += 1  # 还没找到，继续找更大的数
+                i += 1
+        return ans
+```
