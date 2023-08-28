@@ -2021,6 +2021,70 @@ class Solution:
         return ans
 ```
 
+### [插入区间 - 2023/8/28](https://leetcode.cn/problems/insert-interval/description/)
+
+#### 顺推
+
+```py
+class Solution:
+    def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
+        ans = []
+        n = len(intervals)
+        flag = False
+        if len(intervals) == 0:
+            ans.append(newInterval)
+            return ans
+        for i in range(n - 1):
+            x = intervals[i]
+            l, r = x[0], x[1]
+            if newInterval[0] >= l and newInterval[0] <= r:newInterval[0] = l
+            if newInterval[1] >= l and newInterval[1] <= r:newInterval[1] = r
+            if r < newInterval[0]:ans.append(x)
+            if newInterval[1] < l and not flag:
+                ans.append(newInterval)
+                flag = True
+            if l > newInterval[1]:ans.append(x)
+        x = intervals[-1]
+        if newInterval[1] < x[0] and not flag:
+            flag = True
+            ans.append(newInterval)
+        if x[1] < newInterval[0] or x[0] > newInterval[1]:ans.append(intervals[-1])
+        if newInterval[0] >= x[0] and newInterval[0] <= x[1]:newInterval[0] = x[0]
+        if newInterval[1] >= x[0] and newInterval[1] <= x[1]:newInterval[1] = x[1]
+        if not flag:
+            ans.append(newInterval)
+        return ans
+```
+
+#### 使用昨天的api
+
+```py
+class Solution:
+    def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
+        def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+            def cmp(x, y):
+                if x[0] != y[0]:
+                    return -1 if x[0] < y[0] else 1
+                else:
+                    return -1 if x[1] < y[1] else 1
+            n = len(intervals)
+            intervals.sort(key = cmp_to_key(cmp))
+            print(intervals)
+            l, r = intervals[0][0], intervals[0][1]
+            ans = list()
+            for i in range(0, n):
+                if r < intervals[i][0]:
+                    ans.append([l, r])
+                    l = intervals[i][0]
+                    r = intervals[i][1]
+                elif r < intervals[i][1]:
+                    r = intervals[i][1]
+            ans.append([l, r])
+            return ans
+        intervals.append(newInterval)
+        return merge(self, intervals)
+```
+
 
 
 # 周赛
