@@ -2085,6 +2085,24 @@ class Solution:
         return merge(self, intervals)
 ```
 
+### [带因子的二叉树 - 2023/8/29](https://leetcode.cn/problems/binary-trees-with-factors/description/)
+
+```py
+class Solution:
+    def numFactoredBinaryTrees(self, arr: List[int]) -> int:
+        cnt = Counter(arr)
+        ans, n = 0, len(arr)
+        arr.sort()
+        mod = 1e9 + 7
+        for i in range(n):
+            for j in range(i):
+                div = arr[i] / arr[j] 
+                if arr[i] % arr[j] == 0 and cnt[div] > 0:
+                    cnt[arr[i]] += (cnt[div] * cnt[arr[j]])%mod
+            ans = (ans + cnt[arr[i]])%mod
+        return int(ans)
+```
+
 
 
 # 周赛
