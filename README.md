@@ -2103,6 +2103,62 @@ class Solution:
         return int(ans)
 ```
 
+### [到家的最少跳跃次数 - 2023/8/30](https://leetcode.cn/problems/minimum-jumps-to-reach-home/description/)
+
+#### 跳的方向的划分
+
+```py
+class Solution:
+    def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
+        '''
+            forbidden建成一个哈希表，便于查询，
+        '''
+        set_ = set(forbidden) # 障碍物的位置
+        vis = set() # 记录已经访问过的点
+        MAX = max([a, b, x] + forbidden)
+        @cache
+        def f(i: int, left_cnt: int) -> int: # i表示当前位置，left_cnt 表示上一步是否往左跳了1步
+            if i == x:
+                return 0
+            if i > MAX + a + b: # 最右边界 
+                return inf
+            vis.add(i)
+            ans = inf
+            if left_cnt == 0 and i - b >= 0 and (i - b) not in set_ and (i - b) not in vis: # 往左跳
+                ans = f(i - b, left_cnt + 1)
+            if (i + a) not in set_ and (i + a) not in vis: # 往右跳
+                ans = min(ans, f(i + a, 0))
+            vis.remove(i)
+            return ans + 1
+        ans = f(0, 0)
+        return - 1 if ans == inf else ans
+```
+
+#### 最短路的宽搜
+
+```py
+class Solution:
+    def minimumJumps(self, forbidden: List[int], a: int, b: int, x: int) -> int:
+        s = set(forbidden)
+        q = deque([(0, 1)])
+        vis = {(0, 1)}
+        ans = 0
+        while q:
+            for _ in range(len(q)):
+                i, k = q.popleft()
+                if i == x:
+                    return ans
+                nxt = [(i + a, 1)]
+                if k & 1:
+                    nxt.append((i - b, 0))
+                for j, k in nxt:
+                    if 0 <= j < 6000 and j not in s and (j, k) not in vis:
+                        q.append((j, k))
+                        vis.add((j, k))
+            ans += 1
+        return -1
+```
+
 
 
 # 周赛
