@@ -3441,32 +3441,32 @@ class Solution:
 
 #### 类似题
 
-* ### [1235. 规划兼职工作 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/description/)
+* [1235. 规划兼职工作 - 力扣（LeetCode）](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/description/)
 
-  ```py
-  class Solution:
-      def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
-          offers = list(zip(startTime, endTime, profit))
-          offers.sort(key=lambda k : k[1])
-          print(offers)
-          n = len(offers)
-          f = [0 for _ in range(n)]
-          f[0] = offers[0][2]
-          for i in range(1, n):
-              x = offers[i]
-              l, r = 0, n - 1
-              while l < r:
-                  mid = (l + r + 1) >> 1
-                  if offers[mid][1] <= x[0]:
-                      l = mid
-                  else:
-                      r = mid - 1
-              if  offers[r][1] <= x[0]:
-                  f[i] = max(f[i - 1], f[r] + x[2])
-              else:
-                  f[i] = max(f[i - 1], x[2])
-          return f[n - 1]
-  ```
+```py
+class Solution:
+    def jobScheduling(self, startTime: List[int], endTime: List[int], profit: List[int]) -> int:
+        offers = list(zip(startTime, endTime, profit))
+        offers.sort(key=lambda k : k[1])
+        print(offers)
+        n = len(offers)
+        f = [0 for _ in range(n)]
+        f[0] = offers[0][2]
+        for i in range(1, n):
+            x = offers[i]
+            l, r = 0, n - 1
+            while l < r:
+                mid = (l + r + 1) >> 1
+                if offers[mid][1] <= x[0]:
+                    l = mid
+                else:
+                    r = mid - 1
+            if  offers[r][1] <= x[0]:
+                f[i] = max(f[i - 1], f[r] + x[2])
+            else:
+                f[i] = max(f[i - 1], x[2])
+        return f[n - 1]
+```
 
 ### [6467. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/)
 
